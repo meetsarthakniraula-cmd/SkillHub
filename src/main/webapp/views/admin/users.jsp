@@ -13,8 +13,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Campus Skill Hub</title>
+    <title>Manage Users - Campus Skill Hub</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css">
 </head>
@@ -27,10 +26,10 @@
         <p>Admin Panel</p>
     </div>
     <nav class="sidebar-nav">
-        <a href="${pageContext.request.contextPath}/admin/dashboard" class="nav-item active">
+        <a href="${pageContext.request.contextPath}/admin/dashboard" class="nav-item">
             Dashboard
         </a>
-        <a href="${pageContext.request.contextPath}/admin/users" class="nav-item">
+        <a href="${pageContext.request.contextPath}/admin/users" class="nav-item active">
             Manage Users
         </a>
         <a href="${pageContext.request.contextPath}/admin/skills" class="nav-item">
@@ -45,38 +44,16 @@
 <!-- Main Content -->
 <div class="main-content">
 
-    <!-- Top Bar -->
     <div class="topbar">
-        <h1>Dashboard</h1>
+        <h1>Manage Users</h1>
         <span>Welcome, <%= session.getAttribute("userName") %></span>
     </div>
 
-    <!-- Statistics Cards -->
-    <div class="stats-grid">
-        <div class="stat-card blue">
-            <h3>Total Students</h3>
-            <p class="stat-number">${totalStudents}</p>
-        </div>
-        <div class="stat-card green">
-            <h3>Total Tutors</h3>
-            <p class="stat-number">${totalTutors}</p>
-        </div>
-        <div class="stat-card orange">
-            <h3>Pending Approvals</h3>
-            <p class="stat-number">${pendingUsers}</p>
-        </div>
-        <div class="stat-card purple">
-            <h3>Open Tasks</h3>
-            <p class="stat-number">${openTasks}</p>
-        </div>
-    </div>
-
-    <!-- Pending Users Table -->
     <div class="section">
-        <h2>Pending Approvals</h2>
-        <% List<User> pendingList = (List<User>) request.getAttribute("pendingList"); %>
-        <% if(pendingList == null || pendingList.isEmpty()) { %>
-        <p class="no-data">No pending approvals at the moment.</p>
+        <h2>All Users</h2>
+        <% List<User> allUsers = (List<User>) request.getAttribute("allUsers"); %>
+        <% if(allUsers == null || allUsers.isEmpty()) { %>
+        <p class="no-data">No users registered yet.</p>
         <% } else { %>
         <table class="data-table">
             <thead>
@@ -86,12 +63,12 @@
                 <th>Phone</th>
                 <th>Role</th>
                 <th>Department</th>
-                <th>Registered</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody>
-            <% for(User user : pendingList) { %>
+            <% for(User user : allUsers) { %>
             <tr>
                 <td><%= user.getFullName() %></td>
                 <td><%= user.getEmail() %></td>
@@ -100,15 +77,22 @@
                         <%= user.getRole() %></span>
                 </td>
                 <td><%= user.getDepartment() != null ? user.getDepartment() : "-" %></td>
-                <td><%= user.getCreatedAt() != null ?
-                        user.getCreatedAt().toString().substring(0,10) : "-" %>
+                <td><span class="badge <%= user.getStatus() %>">
+                        <%= user.getStatus() %></span>
                 </td>
                 <td>
+                    <% if(user.getStatus().equals("pending") ||
+                            user.getStatus().equals("suspended")) { %>
                     <a href="${pageContext.request.contextPath}/admin/approve?id=<%= user.getUserId() %>"
                        class="btn-approve">Approve</a>
+                    <% } %>
+                    <% if(user.getStatus().equals("active")) { %>
+                    <a href="${pageContext.request.contextPath}/admin/suspend?id=<%= user.getUserId() %>"
+                       class="btn-suspend">Suspend</a>
+                    <% } %>
                     <a href="${pageContext.request.contextPath}/admin/delete?id=<%= user.getUserId() %>"
                        class="btn-delete"
-                       onclick="return confirm('Are you sure you want to delete this user?')">
+                       onclick="return confirm('Delete this user permanently?')">
                         Delete</a>
                 </td>
             </tr>

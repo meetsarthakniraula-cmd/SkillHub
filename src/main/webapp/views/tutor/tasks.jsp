@@ -75,8 +75,7 @@
                 <td>
                     <a href="${pageContext.request.contextPath}/tasks/claim?id=<%= task.getTaskId() %>"
                        class="btn-approve"
-                       onclick="return confirm(
-                           'Claim this task?')">
+                       onclick="return confirm('Claim this task?')">
                         Claim Task</a>
                 </td>
             </tr>

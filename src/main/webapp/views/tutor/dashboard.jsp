@@ -18,6 +18,8 @@
            class="nav-item active">Dashboard</a>
         <a href="${pageContext.request.contextPath}/tasks/list"
            class="nav-item">Available Tasks</a>
+        <a href="${pageContext.request.contextPath}/tutor/mytasks"
+           class="nav-item">My Claimed Tasks</a>
         <a href="${pageContext.request.contextPath}/logout"
            class="nav-item logout">Logout</a>
     </nav>
@@ -29,14 +31,26 @@
     </div>
     <div class="stats-grid">
         <div class="stat-card blue">
+            <h3>Tasks Claimed</h3>
+            <p class="stat-number">
+                ${myTasksCount}
+            </p>
+        </div>
+        <div class="stat-card green">
+            <h3>Average Rating</h3>
+            <p class="stat-number">
+                <%= request.getAttribute("avgRating") != null ?
+                        String.format("%.1f", request.getAttribute("avgRating")) : "0.0" %> ★
+            </p>
+        </div>
+        <div class="stat-card orange">
             <h3>Browse Tasks</h3>
-            <p style="font-size:14px; color:#7f8c8d;
-               margin-bottom:16px;">
-                Find tasks matching your skills</p>
+            <p style="font-size:13px; color:#7f8c8d;
+               margin-bottom:12px;">Find new tasks</p>
             <a href="${pageContext.request.contextPath}/tasks/list"
                class="btn-approve"
                style="display:inline-block;">
-                Browse Tasks</a>
+                Browse Now</a>
         </div>
     </div>
 </div>

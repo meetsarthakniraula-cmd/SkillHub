@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,6 +16,8 @@
     <nav class="sidebar-nav">
         <a href="${pageContext.request.contextPath}/student/dashboard"
            class="nav-item active">Dashboard</a>
+        <a href="${pageContext.request.contextPath}/tasks/list"
+           class="nav-item">My Tasks</a>
         <a href="${pageContext.request.contextPath}/logout"
            class="nav-item logout">Logout</a>
     </nav>
@@ -25,9 +27,28 @@
         <h1>Student Dashboard</h1>
         <span>Welcome, <%= session.getAttribute("userName") %></span>
     </div>
-    <div class="section">
-        <h2>Welcome to Campus Skill Hub!</h2>
-        <p>You can post tasks and find tutors here.</p>
+    <div class="stats-grid">
+        <div class="stat-card blue">
+            <h3>Post A Task</h3>
+            <p style="font-size:14px; color:#7f8c8d;
+               margin-bottom:16px;">
+                Need help? Post a task!</p>
+            <a href="${pageContext.request.contextPath}/tasks/add"
+               class="btn-approve"
+               style="display:inline-block;">
+                + Post Task</a>
+        </div>
+        <div class="stat-card green">
+            <h3>My Tasks</h3>
+            <p style="font-size:14px; color:#7f8c8d;
+               margin-bottom:16px;">
+                View all your posted tasks</p>
+            <a href="${pageContext.request.contextPath}/tasks/list"
+               class="btn-approve"
+               style="display:inline-block;
+               background:#27ae60;">
+                View Tasks</a>
+        </div>
     </div>
 </div>
 </body>

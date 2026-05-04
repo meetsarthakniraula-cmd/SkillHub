@@ -57,15 +57,30 @@ public class RatingServlet extends HttpServlet {
             submitRating(request, response);
         }
     }
-
     private void showRatingForm(
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        int taskId = Integer.parseInt(
-                request.getParameter("taskId"));
+        String taskIdStr = request.getParameter("taskId");
+
+        // Check if taskId is missing
+        if (taskIdStr == null || taskIdStr.trim().isEmpty()) {
+            response.sendRedirect(
+                    request.getContextPath() + "/tasks/list");
+            return;
+        }
+
+        int taskId = Integer.parseInt(taskIdStr);
         Task task = taskDAO.getTaskById(taskId);
+
+        // Check if task exists
+        if (task == null) {
+            response.sendRedirect(
+                    request.getContextPath() + "/tasks/list");
+            return;
+        }
+
         request.setAttribute("task", task);
         request.getRequestDispatcher(
                         "/views/student/rating-form.jsp")

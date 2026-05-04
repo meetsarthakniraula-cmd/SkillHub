@@ -20,6 +20,7 @@
            class="nav-item">My Tasks</a>
         <a href="${pageContext.request.contextPath}/logout"
            class="nav-item logout">Logout</a>
+
     </nav>
 </div>
 <div class="main-content">

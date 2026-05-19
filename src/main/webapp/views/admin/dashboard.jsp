@@ -36,6 +36,10 @@
         <a href="${pageContext.request.contextPath}/admin/skills" class="nav-item">
             Manage Skills
         </a>
+        <a href="${pageContext.request.contextPath}/profile/view"
+           class="nav-item">My Profile</a>
+        <a href="${pageContext.request.contextPath}/admin/reports"
+           class="nav-item">Reports</a>
         <a href="${pageContext.request.contextPath}/logout" class="nav-item logout">
             Logout
         </a>

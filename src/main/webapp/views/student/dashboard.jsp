@@ -18,8 +18,13 @@
            class="nav-item active">Dashboard</a>
         <a href="${pageContext.request.contextPath}/tasks/list"
            class="nav-item">My Tasks</a>
+        <a href="${pageContext.request.contextPath}/messages/inbox"
+           class="nav-item">Messages</a>
+        <a href="${pageContext.request.contextPath}/profile/view"
+           class="nav-item">My Profile</a>
         <a href="${pageContext.request.contextPath}/logout"
            class="nav-item logout">Logout</a>
+
 
     </nav>
 </div>

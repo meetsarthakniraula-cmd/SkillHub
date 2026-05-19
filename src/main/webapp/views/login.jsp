@@ -51,6 +51,16 @@
             </p>
         </div>
 
+        <div style="text-align:center; margin-top:16px;
+            font-size:13px;">
+            <a href="${pageContext.request.contextPath}/about.jsp"
+               style="color:#7f8c8d; margin-right:16px;
+              text-decoration:none;">About</a>
+            <a href="${pageContext.request.contextPath}/contact.jsp"
+               style="color:#7f8c8d; text-decoration:none;">
+                Contact</a>
+        </div>
+
     </div>
 </div>
 </body>

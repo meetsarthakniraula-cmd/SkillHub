@@ -161,4 +161,193 @@ public class AdminDAO {
         }
         return 0;
     }
+    // Count all active users
+    public int countActiveUsers() {
+        String sql = "SELECT COUNT(*) FROM users " +
+                "WHERE status = 'active' " +
+                "AND role != 'admin'";
+        Connection conn = DBConnection.getConnection();
+        try {
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            DBConnection.closeConnection(conn);
+        }
+        return 0;
+    }
+
+    // Count completed tasks
+    public int countCompletedTasks() {
+        String sql = "SELECT COUNT(*) FROM tasks " +
+                "WHERE status = 'completed'";
+        Connection conn = DBConnection.getConnection();
+        try {
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            DBConnection.closeConnection(conn);
+        }
+        return 0;
+    }
+
+    // Count in progress tasks
+    public int countInProgressTasks() {
+        String sql = "SELECT COUNT(*) FROM tasks " +
+                "WHERE status = 'in_progress'";
+        Connection conn = DBConnection.getConnection();
+        try {
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            DBConnection.closeConnection(conn);
+        }
+        return 0;
+    }
+
+    // Count total tasks
+    public int countAllTasks() {
+        String sql = "SELECT COUNT(*) FROM tasks";
+        Connection conn = DBConnection.getConnection();
+        try {
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            DBConnection.closeConnection(conn);
+        }
+        return 0;
+    }
+
+    // Count total ratings
+    public int countTotalRatings() {
+        String sql = "SELECT COUNT(*) FROM ratings";
+        Connection conn = DBConnection.getConnection();
+        try {
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            DBConnection.closeConnection(conn);
+        }
+        return 0;
+    }
+
+    // Get top rated tutors
+    public List<String[]> getTopRatedTutors() {
+        List<String[]> tutors = new ArrayList<>();
+        String sql = "SELECT u.full_name, " +
+                "COUNT(r.rating_id) as total_ratings, " +
+                "ROUND(AVG(r.score), 1) as avg_rating " +
+                "FROM ratings r " +
+                "JOIN users u ON r.rated_user = u.user_id " +
+                "GROUP BY u.user_id, u.full_name " +
+                "ORDER BY avg_rating DESC " +
+                "LIMIT 5";
+        Connection conn = DBConnection.getConnection();
+        try {
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String[] tutor = {
+                        rs.getString("full_name"),
+                        String.valueOf(
+                                rs.getInt("total_ratings")),
+                        String.valueOf(
+                                rs.getDouble("avg_rating"))
+                };
+                tutors.add(tutor);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            DBConnection.closeConnection(conn);
+        }
+        return tutors;
+    }
+
+    // Get most popular skills
+    public List<String[]> getPopularSkills() {
+        List<String[]> skills = new ArrayList<>();
+        String sql = "SELECT s.skill_name, " +
+                "COUNT(t.task_id) as task_count " +
+                "FROM skills s " +
+                "LEFT JOIN tasks t " +
+                "ON s.skill_id = t.skill_id " +
+                "GROUP BY s.skill_id, s.skill_name " +
+                "ORDER BY task_count DESC " +
+                "LIMIT 5";
+        Connection conn = DBConnection.getConnection();
+        try {
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String[] skill = {
+                        rs.getString("skill_name"),
+                        String.valueOf(
+                                rs.getInt("task_count"))
+                };
+                skills.add(skill);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            DBConnection.closeConnection(conn);
+        }
+        return skills;
+    }
+
+    // Get recent registrations
+    public List<User> getRecentUsers() {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users " +
+                "WHERE role != 'admin' " +
+                "ORDER BY created_at DESC LIMIT 5";
+        Connection conn = DBConnection.getConnection();
+        try {
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setUserId(
+                        rs.getInt("user_id"));
+                user.setFullName(
+                        rs.getString("full_name"));
+                user.setEmail(
+                        rs.getString("email"));
+                user.setRole(
+                        rs.getString("role"));
+                user.setStatus(
+                        rs.getString("status"));
+                user.setCreatedAt(
+                        rs.getTimestamp("created_at"));
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            DBConnection.closeConnection(conn);
+        }
+        return users;
+    }
 }

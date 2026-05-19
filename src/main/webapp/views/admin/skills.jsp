@@ -23,6 +23,8 @@
            class="nav-item">Manage Users</a>
         <a href="${pageContext.request.contextPath}/admin/skills/list"
            class="nav-item active">Manage Skills</a>
+        <a href="${pageContext.request.contextPath}/admin/reports"
+           class="nav-item">Reports</a>
         <a href="${pageContext.request.contextPath}/logout"
            class="nav-item logout">Logout</a>
     </nav>

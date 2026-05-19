@@ -91,4 +91,110 @@ public class UserDAO {
             DBConnection.closeConnection(conn);
         }
     }
+    // Get user by ID
+    public User getUserById(int userId) {
+        String sql = "SELECT * FROM users " +
+                "WHERE user_id = ?";
+        Connection conn = DBConnection.getConnection();
+        try {
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getInt("user_id"));
+                user.setFullName(rs.getString("full_name"));
+                user.setEmail(rs.getString("email"));
+                user.setPhone(rs.getString("phone"));
+                user.setRole(rs.getString("role"));
+                user.setDepartment(
+                        rs.getString("department"));
+                user.setAcademicYear(
+                        rs.getString("academic_year"));
+                user.setBio(rs.getString("bio"));
+                user.setStatus(rs.getString("status"));
+                user.setCreatedAt(
+                        rs.getTimestamp("created_at"));
+                return user;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting user: "
+                    + e.getMessage());
+        } finally {
+            DBConnection.closeConnection(conn);
+        }
+        return null;
+    }
+
+    // Update user profile
+    public boolean updateProfile(User user) {
+        String sql = "UPDATE users SET " +
+                "full_name = ?, phone = ?, " +
+                "department = ?, academic_year = ?, " +
+                "bio = ? WHERE user_id = ?";
+        Connection conn = DBConnection.getConnection();
+        try {
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+            ps.setString(1, user.getFullName());
+            ps.setString(2, user.getPhone());
+            ps.setString(3, user.getDepartment());
+            ps.setString(4, user.getAcademicYear());
+            ps.setString(5, user.getBio());
+            ps.setInt(6, user.getUserId());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error updating profile: "
+                    + e.getMessage());
+            return false;
+        } finally {
+            DBConnection.closeConnection(conn);
+        }
+    }
+
+    // Change password
+    public boolean changePassword(int userId,
+                                  String newPassword) {
+        String sql = "UPDATE users SET password = ? " +
+                "WHERE user_id = ?";
+        Connection conn = DBConnection.getConnection();
+        try {
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+            ps.setString(1,
+                    PasswordUtil.encrypt(newPassword));
+            ps.setInt(2, userId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error changing password: "
+                    + e.getMessage());
+            return false;
+        } finally {
+            DBConnection.closeConnection(conn);
+        }
+    }
+
+    // Verify current password
+    public boolean verifyPassword(int userId,
+                                  String password) {
+        String sql = "SELECT user_id FROM users " +
+                "WHERE user_id = ? AND password = ?";
+        Connection conn = DBConnection.getConnection();
+        try {
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ps.setString(2,
+                    PasswordUtil.encrypt(password));
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            System.out.println("Error verifying: "
+                    + e.getMessage());
+            return false;
+        } finally {
+            DBConnection.closeConnection(conn);
+        }
+    }
 }

@@ -70,19 +70,30 @@
                         "Rs. " + task.getBudget() :
                         "Free" %></td>
                 <td>
-                        <span class="badge"
-                              style="background:<%=
-                            "in_progress".equals(
-                                task.getStatus()) ?
-                            "#fef9e7" : "#eafaf1" %>;
-                                      color:<%=
-                            "in_progress".equals(
-                                task.getStatus()) ?
-                            "#d68910" : "#27ae60" %>;">
-                            <%= task.getStatus()
-                                    .replace("_"," ")
-                                    .toUpperCase() %>
-                        </span>
+    <span class="badge"
+          style="background:<%=
+        "in_progress".equals(
+            task.getStatus()) ?
+        "#fef9e7" : "#eafaf1" %>;
+                  color:<%=
+        "in_progress".equals(
+            task.getStatus()) ?
+        "#d68910" : "#27ae60" %>;">
+        <%= task.getStatus()
+                .replace("_"," ")
+                .toUpperCase() %>
+    </span>
+                    <% if("in_progress".equals(
+                            task.getStatus())) { %>
+                    <br>
+                    <a href="${pageContext.request.contextPath}/messages/chat?taskId=<%= task.getTaskId() %>"
+                       class="btn-suspend"
+                       style="background:#9b59b6;
+           display:inline-block;
+           margin-top:6px;">
+                        💬 Message Student
+                    </a>
+                    <% } %>
                 </td>
             </tr>
             <% } %>

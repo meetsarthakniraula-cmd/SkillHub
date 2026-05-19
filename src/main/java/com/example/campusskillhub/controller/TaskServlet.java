@@ -9,6 +9,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/tasks/*")
@@ -56,6 +57,9 @@ public class TaskServlet extends HttpServlet {
                 break;
             case "/complete":
                 completeTask(request, response);
+                break;
+            case "/search":
+                searchTasks(request, response);
                 break;
             default:
                 listTasks(request, response, role);
@@ -300,5 +304,70 @@ public class TaskServlet extends HttpServlet {
         taskDAO.completeTask(taskId);
         response.sendRedirect(
                 request.getContextPath() + "/tasks/list");
+    }
+    private void searchTasks(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String keyword =
+                request.getParameter("keyword");
+        String skillIdStr =
+                request.getParameter("skillId");
+        String role = (String) request.getSession()
+                .getAttribute("userRole");
+        int userId = (int) request.getSession()
+                .getAttribute("userId");
+
+        List<Task> tasks = new ArrayList<>();
+
+        // Filter by skill
+        if (skillIdStr != null &&
+                !skillIdStr.trim().isEmpty() &&
+                !skillIdStr.equals("0")) {
+            int skillId = Integer.parseInt(skillIdStr);
+            tasks = taskDAO.filterBySkill(
+                    skillId, role, userId);
+        }
+        // Search by keyword
+        else if (keyword != null &&
+                !keyword.trim().isEmpty()) {
+            tasks = taskDAO.searchTasks(
+                    keyword.trim(), role, userId);
+        }
+        // Show all if empty
+        else {
+            if ("admin".equals(role)) {
+                tasks = taskDAO.getAllTasks();
+            } else if ("student".equals(role)) {
+                tasks = taskDAO.getTasksByStudent(userId);
+            } else {
+                tasks = taskDAO.getOpenTasks();
+            }
+        }
+
+        // Get skills for filter dropdown
+        List<Skill> skills = skillDAO.getAllSkills();
+        request.setAttribute("skills", skills);
+        request.setAttribute("tasks", tasks);
+        request.setAttribute("keyword", keyword);
+        request.setAttribute("selectedSkill",
+                skillIdStr);
+        request.setAttribute("role", role);
+        request.setAttribute("isSearch", true);
+
+        if ("student".equals(role)) {
+            request.getRequestDispatcher(
+                            "/views/student/tasks.jsp")
+                    .forward(request, response);
+        } else if ("tutor".equals(role)) {
+            request.getRequestDispatcher(
+                            "/views/tutor/tasks.jsp")
+                    .forward(request, response);
+        } else {
+            request.getRequestDispatcher(
+                            "/views/admin/tasks.jsp")
+                    .forward(request, response);
+        }
     }
 }

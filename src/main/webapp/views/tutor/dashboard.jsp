@@ -20,8 +20,13 @@
            class="nav-item">Available Tasks</a>
         <a href="${pageContext.request.contextPath}/tutor/mytasks"
            class="nav-item">My Claimed Tasks</a>
+        <a href="${pageContext.request.contextPath}/messages/inbox"
+           class="nav-item">Messages</a>
+        <a href="${pageContext.request.contextPath}/profile/view"
+           class="nav-item">My Profile</a>
         <a href="${pageContext.request.contextPath}/logout"
            class="nav-item logout">Logout</a>
+
     </nav>
 </div>
 <div class="main-content">

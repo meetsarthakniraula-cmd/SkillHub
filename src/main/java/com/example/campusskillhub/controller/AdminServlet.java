@@ -49,6 +49,9 @@ public class AdminServlet extends HttpServlet {
             case "/delete":
                 deleteUser(request, response);
                 break;
+            case "/reports":
+                showReports(request, response);
+                break;
             default:
                 showDashboard(request, response);
                 break;
@@ -111,5 +114,42 @@ public class AdminServlet extends HttpServlet {
         adminDAO.deleteUser(userId);
         response.sendRedirect(
                 request.getContextPath() + "/admin/users");
+    }
+    private void showReports(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        // Statistics
+        request.setAttribute("totalStudents",
+                adminDAO.countUsers("student"));
+        request.setAttribute("totalTutors",
+                adminDAO.countUsers("tutor"));
+        request.setAttribute("totalTasks",
+                adminDAO.countAllTasks());
+        request.setAttribute("openTasks",
+                adminDAO.countTasks("open"));
+        request.setAttribute("inProgressTasks",
+                adminDAO.countInProgressTasks());
+        request.setAttribute("completedTasks",
+                adminDAO.countCompletedTasks());
+        request.setAttribute("pendingUsers",
+                adminDAO.countPendingUsers());
+        request.setAttribute("activeUsers",
+                adminDAO.countActiveUsers());
+        request.setAttribute("totalRatings",
+                adminDAO.countTotalRatings());
+
+        // Lists
+        request.setAttribute("topTutors",
+                adminDAO.getTopRatedTutors());
+        request.setAttribute("popularSkills",
+                adminDAO.getPopularSkills());
+        request.setAttribute("recentUsers",
+                adminDAO.getRecentUsers());
+
+        request.getRequestDispatcher(
+                        "/views/admin/reports.jsp")
+                .forward(request, response);
     }
 }
